@@ -176,7 +176,7 @@
 				// Apply the data filter if provided
 				dataFilter && ( json = dataFilter.apply( xOptions , [ json ] ) );
 				// Call success then complete
-				callIfDefined( successCallback , xOptions , [ json , STR_SUCCESS ] );
+				callIfDefined( successCallback , xOptions , [ json , xOptions ] );
 				callIfDefined( completeCallback , xOptions , [ xOptions , STR_SUCCESS ] );
 
 			}
