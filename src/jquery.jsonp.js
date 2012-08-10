@@ -1,7 +1,7 @@
 /*
- * jQuery JSONP Core Plugin 2.3.0 (2012-03-27)
+ * jQuery JSONP Core Plugin 2.3.1 (2012-05-16)
  *
- * http://code.google.com/p/jquery-jsonp/
+ * https://github.com/jaubourg/jquery-jsonp
  *
  * Copyright (c) 2012 Julian Aubourg
  *
@@ -65,8 +65,6 @@
 		Deferred = $.Deferred,
 		// Head element
 		head = $( "head" )[ 0 ] || document.documentElement,
-		// First child
-		firstChild = head.firstChild,
 		// Page cache
 		pageCache = {},
 		// Counter
@@ -132,6 +130,7 @@
 			supportOnreadystatechange,
 
 			// Request execution vars
+			firstChild,
 			script,
 			scriptAfter,
 			timeoutTimer;
@@ -268,13 +267,13 @@
 			// Re-declare cleanUp function
 			cleanUp = function( i ) {
 				timeoutTimer && clearTimeout( timeoutTimer );
-				script[ STR_ON_READY_STATE_CHANGE ] = script[ STR_ON_LOAD ] = script[ STR_ON_ERROR ]	= null;
+				script[ STR_ON_READY_STATE_CHANGE ] = script[ STR_ON_LOAD ] = script[ STR_ON_ERROR ] = null;
 				head[ STR_REMOVE_CHILD ]( script );
 				scriptAfter && head[ STR_REMOVE_CHILD ]( scriptAfter );
 			};
 
 			// Append main script
-			head[ STR_INSERT_BEFORE ]( script , firstChild );
+			head[ STR_INSERT_BEFORE ]( script , ( firstChild = head.firstChild ) );
 
 			// Append trailing script if needed
 			scriptAfter && head[ STR_INSERT_BEFORE ]( scriptAfter , firstChild );
