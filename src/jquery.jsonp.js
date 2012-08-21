@@ -1,5 +1,5 @@
 /*
- * jQuery JSONP Core Plugin 2.3.1 (2012-05-16)
+ * jQuery JSONP Core Plugin 2.4.0 (2012-08-21)
  *
  * https://github.com/jaubourg/jquery-jsonp
  *
@@ -26,7 +26,7 @@
 
 	// Call if defined
 	function callIfDefined( method , object , parameters ) {
-		return method && method.apply && method.apply( object.context || object , parameters );
+		return method && method.apply( object.context || object , parameters );
 	}
 
 	// Give joining character given url
@@ -86,7 +86,10 @@
 		},
 
 		// opera demands sniffing :/
-		opera = win.opera;
+		opera = win.opera,
+
+		// IE < 10
+		oldIE = !!$( "<div>" ).html( "<!--[if IE]><i><![endif]-->" ).find("i").length;
 
 	// ###################### MAIN FUNCTION ##
 	function jsonp( xOptions ) {
@@ -140,7 +143,7 @@
 		};
 
 		// Call beforeSend if provided (early abort if false returned)
-		if ( callIfDefined( xOptions.beforeSend, xOptions , [ xOptions ] ) === !1 || done ) {
+		if ( callIfDefined( xOptions.beforeSend , xOptions , [ xOptions ] ) === !1 || done ) {
 			return xOptions;
 		}
 
@@ -224,8 +227,7 @@
 			;
 
 			// Internet Explorer: event/htmlFor trick
-			if ( STR_ON_READY_STATE_CHANGE in script ) {
-
+			if ( oldIE ) {
 				script.htmlFor = script.id;
 				script.event = STR_ON_CLICK;
 			}
