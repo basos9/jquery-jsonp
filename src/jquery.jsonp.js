@@ -9,7 +9,7 @@
  * MIT License: http://www.opensource.org/licenses/mit-license.php
  * 
  * Patced by basos
- * v1.2
+ * v1.3
  */
 ( function( $ ) {
 
