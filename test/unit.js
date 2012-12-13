@@ -217,10 +217,10 @@ test( "abort", function() {
        start();
      },
      error: function(x ,t) {
-       ok(t === "aborted", "Request aborted");
+       ok(t === "aborted", "Legit Request aborted");
      },
      success: function() {
-       ok(false, "Request aborted"); // should fail
+       ok(false, "Legit Request aborted"); // should fail
      },
    });
  var scr = findHead(urlpat);
@@ -231,28 +231,32 @@ test( "abort", function() {
  var scr = findHead(urlpat);
  ok( scr.length === 0, "script tag deleted");
  
- // CHECK for fetch 404
- url = "http://willx.notBeExisting.ccc";
- urlpat = "http://willx.notBeExisting.ccc";
+ // wait for the anyway aborted to be fetched
+ setTimeout(function(){
+   start();
+   // CHECK for fetch 404
+   url = "http://willx.notBeExisting.ccc";
+   urlpat = "http://willx.notBeExisting.ccc";
 
- $.jsonp({
-   url: url,
-   cache:true, // do not append random
-   complete: function() {
-     start();
-   },
-   success: function() {
-     ok(false, "Request failed"); // should fail
-   },
-   error: function(x, t) {
-     ok(true, "Request failed"); // should fail
-     ok(t === "error", "error type");
-   }
- });
+   $.jsonp({
+     url: url,
+     cache:true, // do not append random
+     complete: function() {
+       start();
+     },
+     success: function() {
+       ok(false, "Request failed"); // should fail
+     },
+     error: function(x, t) {
+       ok(true, "Request failed"); // should fail
+       ok(t === "error", "error type");
+     }
+   });
+   stop();
 
- var scr = findHead(urlpat);
- //ok( scr.length === 1, "nox script tag created");
+ },2000);
  stop();
+
  
  
 });
