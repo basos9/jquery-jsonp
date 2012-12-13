@@ -1,4 +1,4 @@
-/*!
+/*
  * jQuery JSONP Core Plugin 2.4.0 (2012-08-21)
  *
  * https://github.com/jaubourg/jquery-jsonp
@@ -20,10 +20,8 @@
 	}
 
 	// Generic callback
-	function getGenericCallback(id) {
-		return function genericCallback( data ) {
-			lastValues[id] = [ data ];
-		}
+	function genericCallback( data ) {
+		lastValue = [ data ];
 	}
 
 	// Call if defined
@@ -66,7 +64,7 @@
 		// Counter
 		count = 0,
 		// Last returned value
-		lastValues = {},
+		lastValue,
 
 		// ###################### DEFAULT OPTIONS ##
 		xOptionsDefaults = {
@@ -113,7 +111,6 @@
 			data = xOptions.data,
 			timeout = xOptions.timeout,
 			pageCached,
-			thisId,
 
 			// Abort/done flag
 			done = 0,
@@ -211,11 +208,11 @@
       
 			// Install the generic callback
 			// (BEWARE: global namespace pollution ahoy)
-			win[ successCallbackName ] = getGenericCallback(thisId = count++);
+			win[ successCallbackName ] = genericCallback;
 
 			// Create the script tag
 			script = $( STR_SCRIPT_TAG )[ 0 ];
-			script.id = STR_JQUERY_JSONP + thisId;
+			script.id = STR_JQUERY_JSONP + count++;
 
 			// Set charset if provided
 			if ( charset ) {
@@ -250,9 +247,8 @@
 
 					} catch( _ ) {}
 
-					result = lastValues[thisId];
-					delete lastValues[thisId];
-					// win[ successCallbackName ] = null;
+					result = lastValue;
+					lastValue = 0;
 					result ? notifySuccess( result[ 0 ] ) : notifyError( STR_ERROR );
 
 				}
