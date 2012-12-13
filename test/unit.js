@@ -146,34 +146,32 @@ test( "callback error", function() {
 });
 
 
-function findHead(url1, url2) {
-  function rquote(str) {
-    return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
-  };
-  var t, obj,
-    reg1 = new RegExp(rquote(url1), "g"),
-    reg2 = url2 ? new RegExp(rquote(url2), "g") : null,
-    head = $( "head" )[ 0 ] || document.documentElement,
-    res = [],
-    children = head.children;
-  for (t=0;t<children.length; t++) {
-    obj = children[t];
-   
-    if (!obj)
-      continue;
-    if ( /_jqjsp[0-9]+/.test(obj.id) &&  (reg1.test(obj.src)  || (reg2 && reg2.test(obj.src)))) {
-      //console.log("FOUND "+t+" "+obj.src + " " + obj.id);
-      res.push(obj);
-    }
-  }
-  return res;
-}
-
 test( "cache", function() {
+   function findHead(url1, url2) {
+     function rquote(str) {
+       return str.replace(/([.?*+^$[\]\\(){}|-])/g, "\\$1");
+     };
+     var t, obj,
+       reg1 = new RegExp(rquote(url1), "g"),
+       reg2 = url2 ? new RegExp(rquote(url2), "g") : null,
+       head = $( "head" )[ 0 ] || document.documentElement,
+       res = [],
+       children = head.children;
+     for (t=0;t<children.length; t++) {
+       obj = children[t];
+      
+       if (!obj)
+         continue;
+       if ( /_jqjsp[0-9]+/.test(obj.id) &&  (reg1.test(obj.src)  || (reg2 && reg2.test(obj.src)))) {
+         //console.log("FOUND "+t+" "+obj.src + " " + obj.id);
+         res.push(obj);
+       }
+     }
+		 return res;
+	}
 
 	var url = "http://gdata.youtube.com/feeds/api/users/julianaubourg?_nx=x&callback=?";
 		urlpat = "http://gdata.youtube.com/feeds/api/users/julianaubourg?_nx=x&";
-		
 	$.jsonp({
 		url: url,
     cache:false, // do append random
@@ -202,62 +200,6 @@ test( "cache", function() {
 	ok( ! /_[0-9]+=$/.test(scr[0].src), "cache (browser) off");
 
 	stop();
-});
 
-
-
-test( "abort", function() {
-
- var url = "http://gdata.youtube.com/feeds/api/users/julianaubourg?_nx=x&callback=?";
-   urlpat = "http://gdata.youtube.com/feeds/api/users/julianaubourg?_nx=x&",
-   xOpts = $.jsonp({
-     url: url,
-     cache:false, // do append random
-     complete: function() {
-       start();
-     },
-     error: function(x ,t) {
-       ok(t === "aborted", "Legit Request aborted");
-     },
-     success: function() {
-       ok(false, "Legit Request aborted"); // should fail
-     },
-   });
- var scr = findHead(urlpat);
- ok( scr.length === 1, "script tag created");
- stop();
- 
- xOpts.abort();
- var scr = findHead(urlpat);
- ok( scr.length === 0, "script tag deleted");
- 
- // wait for the anyway aborted to be fetched
- setTimeout(function(){
-   start();
-   // CHECK for fetch 404
-   url = "http://willx.notBeExisting.ccc";
-   urlpat = "http://willx.notBeExisting.ccc";
-
-   $.jsonp({
-     url: url,
-     cache:true, // do not append random
-     complete: function() {
-       start();
-     },
-     success: function() {
-       ok(false, "Request failed"); // should fail
-     },
-     error: function(x, t) {
-       ok(true, "Request failed"); // should fail
-       ok(t === "error", "error type");
-     }
-   });
-   stop();
-
- },2000);
- stop();
-
- 
- 
 });
 
